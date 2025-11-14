@@ -7,6 +7,6 @@ const NotingSchema = new mongoose.Schema({
     iniOn: { type: String, required: true },
     appBy: { type: String, required: true },
     appOn: { type: String, required: true },
-}, { timestamps:ture});
+}, {timestamps: true});
 
 module.exports = mongoose.model('Noting', NotingSchema);

@@ -5,6 +5,6 @@ const SupportingSchema = new mongoose.Schema({
     name: { type: String, required: true },
     pageSeq: { type: String, required: true },
     totalPages: { type: String, required: true },
-}, { timestamps: true});
+}, {timestamps: true});
 
 module.exports = mongoose.model('Supporting', SupportingSchema);

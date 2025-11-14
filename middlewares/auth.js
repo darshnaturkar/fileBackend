@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 const secret = 'darshnaTurkar10112025';
 
@@ -9,7 +10,7 @@ const authenticateJWT = (req, res, next) => {
   const token = authHeader.split(' ')[1];
   jwt.verify(token, secret, (err, user) => {
     if(err) return res.status(200).json({error: 'token expired'});
-    req.user = user;
+    req.user = User;
     next();
   });
 };

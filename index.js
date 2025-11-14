@@ -17,7 +17,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/auth', authRoutes);
 
 
-// app.use('/api/designations', require('./routes/designationRoutes'));
+app.use('/api/file', require('./routes/fileRoutes'));
 
 // Connect to MongoDB and start server
 const PORT = process.env.PORT || 5000;
