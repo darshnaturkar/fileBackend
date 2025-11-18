@@ -7,7 +7,7 @@ exports.createFile = async (req, res) => {
         await file.save();
         res.json({ file });
     } catch (error) {
-        res.stauts(500).json({ error: error });
+        res.status(500).json({ error: error });
     }
 
 };
