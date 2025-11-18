@@ -7,7 +7,7 @@ const authRoutes = require('./routes/auth');
 
 const app = express();
 
-app.use(cors({origin: 'https://sturdy-space-guide-x5g9qw95xgr43p65r-3000.app.github.dev'}));
+app.use(cors());
 app.use(express.json());
 
 // Static folder for uploads
