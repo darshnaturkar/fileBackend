@@ -43,7 +43,6 @@ router.post('/reg', async (res) => {
 });
 
 router.get('/me', authenticateJWT, (req, res) => {
-  // const { username, password } = req.body;
   res.json(req.user);
 
 });
