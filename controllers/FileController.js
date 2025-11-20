@@ -26,7 +26,7 @@ exports.createFile = async (req, res) => {
             number,
             noting,
             sheet,
-            supportFile: supportFilepath
+            supportFile: supportFilePath
         });
 
         await file.save();
