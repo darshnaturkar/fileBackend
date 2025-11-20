@@ -3,11 +3,14 @@ const File = require('../models/File');
 exports.createFile = async (req, res) => {
     try {
         console.log("Incoming body:", req.body);
+        console.log("Incoming file:", req.file); 
 
-        const { type, name, number, noting, support } = req.body;
+        const { type, name, number, noting } = req.body; 
 
-        if (!type || !name || !number || !noting || !support) {
-            return res.status(400).json({ error: "Missing required fields" });
+        const supportFilePath = req.file ? req.file.path : null; 
+        
+        if (!type || !name || !number || !noting || !supportFilePath) {
+            return res.status(400).json({ error: "Missing required fields or support file" });
         }
 
         const file = new File({
@@ -15,7 +18,7 @@ exports.createFile = async (req, res) => {
             name,
             number,
             noting,
-            sheet: support   // Ensure this matches your model field name
+            sheet: supportFilePath 
         });
 
         await file.save();
