@@ -3,9 +3,16 @@ const File = require('../models/File');
 exports.createFile = async (req, res) => {
     try {
         console.log("Incoming body:", req.body);
-        console.log("Incoming file:", req.file); 
+        console.log("Incoming file:", req.files); 
 
-        const { type, name, number, noting } = req.body; 
+        const { type, name, number, noting, sheet } = req.body; 
+
+//          name: '1',
+//   type: 'Policy File',
+//   number: '23',
+//   noting: '3',
+//   sheet: '4',
+//   support: 'C:\\fakepath\\MHD-06-MHDOL-July-24-Jan-25.pdf'
 
         const supportFilePath = req.file ? req.file.path : null; 
         
