@@ -7,6 +7,12 @@ exports.createFile = async (req, res) => {
 
         const { type, name, number, noting, sheet } = req.body; 
 
+//          name: '1',
+//   type: 'Policy File',
+//   number: '23',
+//   noting: '3',
+//   sheet: '4',
+//   support: 'C:\\fakepath\\MHD-06-MHDOL-July-24-Jan-25.pdf'
 
         const supportFilePath = req.file ? req.file.path : null; 
         
@@ -20,7 +26,7 @@ exports.createFile = async (req, res) => {
             number,
             noting,
             sheet,
-            supportFile: supportFilePath
+            supportFile: supportFilepath
         });
 
         await file.save();
