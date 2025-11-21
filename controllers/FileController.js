@@ -1,4 +1,6 @@
 const File = require('../models/File');
+const supporting = require('../models/Supporting')
+const noting = require('../models/Noting')
 
 exports.createFile = async (req, res) => {
     try {
@@ -37,12 +39,45 @@ exports.createFile = async (req, res) => {
 
 
 exports.getFile = async (req, res) => {
-console.log(req);
+ try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    // const {isActive, limit, page} = req.params
+    const filter = {};
+    if (req.query.isActive) {
+      filter.isActive = req.query.isActive === "true"; // filter by active/inactive
+    }
+    if (req.query.name) {
+      filter.name = { $regex: req.query.name, $options: "i" }; // case-insensitive search
+    }
 
-    const file = File.find();
-    res.json(file);
+    const total = await File.countDocuments(filter);
+
+    const details = await File.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("support")
+      .populate("noting")
+      .lean();
+
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+    // const listDetails = details.map((detail) => ({}));
+
+    res.json({
+      details,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 
