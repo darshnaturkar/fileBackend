@@ -53,6 +53,7 @@ exports.getFile = async (req, res) => {
     }
 
     const total = await File.countDocuments(filter);
+console.log(total);
 
     const details = await File.find(filter)
       .sort({ createdAt: -1 })
