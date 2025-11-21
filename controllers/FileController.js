@@ -51,12 +51,13 @@ exports.getFile = async (req, res) => {
         if (req.query.name) {
             filter.name = { $regex: req.query.name, $options: "i" }; // case-insensitive search
         }
+        console.log("filter: ", filter);
 
         const total = await File.countDocuments(filter);
-        console.log(total);
+        console.log("total: ", total);
 
         const detail_check = await File.find();
-        console.log(detail_check);
+        console.log("detail_check: ",detail_check);
         
 
         const details = await File.find(filter)
@@ -67,7 +68,7 @@ exports.getFile = async (req, res) => {
             //   .populate("noting")
             .lean();
 
-        console.log(details);
+        console.log("details: ",details);
 
 
         const baseUrl = `${req.protocol}://${req.get("host")}`;
