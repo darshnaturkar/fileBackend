@@ -74,7 +74,6 @@ exports.getFile = async (req, res) => {
         const baseUrl = `${req.protocol}://${req.get("host")}`;
 
         // const listDetails = details.map((detail) => ({}));
-
         res.json({
             details,
             pagination: {
