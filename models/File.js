@@ -7,6 +7,7 @@ const FileSchema = new mongoose.Schema({
   noting: { type: String, required: true },
   sheet: { type: String, required: true },
   supportFile: { type: String, required: true },
+  isActive: {type: Boolean, default: true}
 },{timestamps: true});
 
 module.exports = mongoose.model('File', FileSchema);
