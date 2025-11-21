@@ -59,8 +59,8 @@ console.log(total);
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("support")
-      .populate("noting")
+    //   .populate("support")
+    //   .populate("noting")
       .lean();
 
     const baseUrl = `${req.protocol}://${req.get("host")}`;
