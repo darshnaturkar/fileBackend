@@ -4,46 +4,37 @@ const fileController = require('../controllers/FileController');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
+const File = require('../models/File'); 
+
 let support_file = "";
 let noting_file = "";
 
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, "uploads/");
-//     },
-//     filename: (req, file, cb) => {
-//         const ext = path.extname(file.originalname);
-//         let filename = "";
-//         console.log(ext);
-
-//         if (file.fieldname === "support") {
-//             filename = `support_${req.body.number}${ext}`;
-//         } else if (file.fieldname === "noting") {
-//             filename = `noting_${req.body.number}${ext}`;
-//         } else {
-//             filename = `${file.fieldname}${ext}`;
-//         }
-
-//         cb(null, filename);
-//     },
-// });
-
 const storage = multer.diskStorage({
- destination: function (req, file, cb) {
- // Specify the upload directory
- cb(null, 'uploads/');
- },
- filename: function (req, file, cb) {
- // Define the file name format
- cb(null, file.originalname);
- }
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        let filename = "";
+        console.log(ext);
+
+        if (file.fieldname === "support") {
+            filename = `support_${req.body.number}${ext}`;
+        } else if (file.fieldname === "noting") {
+            filename = `noting_${req.body.number}${ext}`;
+        } else {
+            filename = `${file.fieldname}_${Date.now()}${ext}`;
+        }
+
+        cb(null, filename);
+    },
 });
 
 const upload = multer({ storage: storage });
 
 router.post('/', authenticateJWT, upload.fields([
-    { name: "support", maxCount: 1 },
-    { name: "noting", maxCount: 1 },
+    { name: 'support', maxCount: 1 },
+    { name: 'noting', maxCount: 1 },
 ]), async (req, res) => {
     try {
         console.log("Incoming body:", req.body);
@@ -53,7 +44,7 @@ router.post('/', authenticateJWT, upload.fields([
 
         // Validate the required fields
         if (!type || !name || !number || !noting) {
-            return res.status(400).json({ error: "Missing required fields or support file" });
+            return res.status(400).json({ error: 'Missing required fields or support file' });
         }
 
         // Get file paths for uploaded files
@@ -68,7 +59,7 @@ router.post('/', authenticateJWT, upload.fields([
             noting,
             sheet,
             supportFile: supportFilePath,
-            notingFile: notingFilePath
+            notingFile: notingFilePath,
         });
 
         // Save the file to the database
@@ -76,7 +67,7 @@ router.post('/', authenticateJWT, upload.fields([
 
         // Send the response back
         return res.status(201).json({
-            msg: "File saved successfully",
+            msg: 'File saved successfully',
             file
         });
 
@@ -85,8 +76,6 @@ router.post('/', authenticateJWT, upload.fields([
         res.status(500).json({ error: error.message || error });
     }
 });
-
-
 
 router.get('/get', authenticateJWT, fileController.getFile);
 
