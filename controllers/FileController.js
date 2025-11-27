@@ -5,11 +5,12 @@ const noting = require('../models/Noting')
 exports.createFile = async (req, res) => {
     try {
         console.log("Incoming body:", req.body);
-        console.log("Incoming file:", req.file);
+        console.log("Incoming file:", req.files);
 
         const { type, name, number, noting, sheet } = req.body;
 
         const supportFilePath = req.file ? req.file.path : null;
+        const notingFilePath = req.file ? req.file.path : null;
 
         if (!type || !name || !number || !noting) {
             return res.status(400).json({ error: "Missing required fields or support file" });
@@ -21,7 +22,8 @@ exports.createFile = async (req, res) => {
             number,
             noting,
             sheet,
-            supportFile: supportFilePath
+            supportFile: supportFilePath,
+            notingFile: notingFilePath
         });
 
         await file.save();
@@ -51,14 +53,8 @@ exports.getFile = async (req, res) => {
         if (req.query.name) {
             filter.name = { $regex: req.query.name, $options: "i" }; // case-insensitive search
         }
-        console.log("filter: ", filter);
 
         const total = await File.countDocuments(filter);
-        console.log("total: ", total);
-
-        const detail_check = await File.find();
-        console.log("detail_check: ",detail_check);
-        
 
         const details = await File.find(filter)
             .sort({ createdAt: -1 })
@@ -74,6 +70,29 @@ exports.getFile = async (req, res) => {
         const baseUrl = `${req.protocol}://${req.get("host")}`;
 
         // const listDetails = details.map((detail) => ({}));
+    //      const listDetails = details.map((detail) => ({
+    //   id: detail._id,
+    //   pre: detail.pre?.name || "",
+    //   preId: detail.pre?._id || null,
+    //   name: detail.name,
+    //   bankAccountNumber: detail.bankAccountNumber,
+    //   bank: detail.bank?.name || "",
+    //   bankId: detail.bank?._id || null,
+    //   panNumber: detail.panNumber,
+    //   travelling: detail.travelling || [],
+    //   honorarium: detail.honorarium || {},
+    //   ifsc: detail.ifscCode,
+    //   designation: detail.designation?.name || "",
+    //   designationId: detail.designation?._id || null,
+    //   chequeFile: detail.chequeFile
+    //     ? `${baseUrl}/uploads/${detail.chequeFile}`
+    //     : null,
+    //   panCardFile: detail.panCardFile
+    //     ? `${baseUrl}/uploads/${detail.panCardFile}`
+    //     : null,
+    //   createdAt: detail.createdAt,
+    //   isActive: detail.isActive,
+    // }));
         res.json({
             details,
             pagination: {
