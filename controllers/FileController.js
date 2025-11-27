@@ -5,7 +5,7 @@ const noting = require('../models/Noting')
 exports.createFile = async (req, res) => {
     try {
         console.log("Incoming body:", req.body);
-        console.log("Incoming file:", req.files);
+        console.log("Incoming file:", req.file);
 
         const { type, name, number, noting, sheet } = req.body;
 
