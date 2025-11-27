@@ -4,19 +4,26 @@ const fileController = require('../controllers/FileController');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const File = require('../models/File'); 
+const fs = require('fs');  
+const File = require('../models/File');  
 
 let support_file = "";
 let noting_file = "";
 
+const uploadDir = 'uploads/';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, uploadDir);  
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
         let filename = "";
         console.log(ext);
+
 
         if (file.fieldname === "support") {
             filename = `support_${req.body.number}${ext}`;
@@ -26,7 +33,7 @@ const storage = multer.diskStorage({
             filename = `${file.fieldname}_${Date.now()}${ext}`;
         }
 
-        cb(null, filename);
+        cb(null, filename);  
     },
 });
 
@@ -42,16 +49,13 @@ router.post('/', authenticateJWT, upload.fields([
 
         const { type, name, number, noting, sheet } = req.body;
 
-        // Validate the required fields
         if (!type || !name || !number || !noting) {
             return res.status(400).json({ error: 'Missing required fields or support file' });
         }
 
-        // Get file paths for uploaded files
         const supportFilePath = req.files["support"] ? req.files["support"][0].filename : null;
         const notingFilePath = req.files["noting"] ? req.files["noting"][0].filename : null;
 
-        // Create a new file record
         const file = new File({
             type,
             name,
@@ -62,10 +66,8 @@ router.post('/', authenticateJWT, upload.fields([
             notingFile: notingFilePath,
         });
 
-        // Save the file to the database
         await file.save();
 
-        // Send the response back
         return res.status(201).json({
             msg: 'File saved successfully',
             file
