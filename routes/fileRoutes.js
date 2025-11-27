@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
         cb(null, "uploads/");
     },
     filename: (req, file, cb) => {
-        console.log(file.fieldname);
+        console.log(req.file);
         if (file.fieldname == "support") {
             const ext = path.extname(file.originalname);
             support_file = "support_" + req.body.number + ext;
