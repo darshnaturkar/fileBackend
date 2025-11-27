@@ -9,8 +9,8 @@ exports.createFile = async (req, res) => {
 
         const { type, name, number, noting, sheet } = req.body;
 
-        const supportFilePath = req.file ? req.file.path : null;
-        const notingFilePath = req.file ? req.file.path : null;
+        const supportFilePath = req.files["support"] ? req.files["support"].path : null;
+        const notingFilePath = req.files["noting"] ? req.files["noting"].path : null;
 
         if (!type || !name || !number || !noting) {
             return res.status(400).json({ error: "Missing required fields or support file" });
