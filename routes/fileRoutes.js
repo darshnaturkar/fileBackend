@@ -9,21 +9,21 @@ let noting_file = "";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "uploads/");
+        cb(null, "uploads/"); 
     },
     filename: (req, file, cb) => {
-        console.log(req.files);
-        if (file.fieldname == "support") {
-            const ext = path.extname(file.originalname);
-            support_file = "support_" + req.body.number + ext;
-            cb(null, "support_" + req.body.number + ext);
-        } else if (file.fieldname == "noting") {
-            const ext = path.extname(file.originalname);
-            noting_file = "noting" + req.body.number + ext;
-            cb(null, "noting" + req.body.number + ext);
+        const ext = path.extname(file.originalname); 
+        let filename = ""; 
+
+        if (file.fieldname === "support") {
+            filename = `support_${req.body.number}${ext}`; 
+        } else if (file.fieldname === "noting") {
+            filename = `noting_${req.body.number}${ext}`;
         } else {
-            cb(null, file.fieldname + ext);
+            filename = `${file.fieldname}${ext}`;
         }
+
+        cb(null, filename); 
     },
 });
 
@@ -35,17 +35,20 @@ router.post('/', authenticateJWT, upload.fields([
 ]), async (req, res) => {
     try {
         console.log("Incoming body:", req.body);
-        console.log("Incoming file:", req.file);
+        console.log("Incoming files:", req.files);
 
         const { type, name, number, noting, sheet } = req.body;
 
-        const supportFilePath = req.files["support"] ? support_file : null;
-        const notingFilePath = req.files["noting"] ? noting_file : null;
-
+        // Validate the required fields
         if (!type || !name || !number || !noting) {
             return res.status(400).json({ error: "Missing required fields or support file" });
         }
 
+        // Get file paths for uploaded files
+        const supportFilePath = req.files["support"] ? req.files["support"][0].filename : null;
+        const notingFilePath = req.files["noting"] ? req.files["noting"][0].filename : null;
+
+        // Create a new file record
         const file = new File({
             type,
             name,
@@ -56,8 +59,10 @@ router.post('/', authenticateJWT, upload.fields([
             notingFile: notingFilePath
         });
 
+        // Save the file to the database
         await file.save();
 
+        // Send the response back
         return res.status(201).json({
             msg: "File saved successfully",
             file
@@ -68,6 +73,8 @@ router.post('/', authenticateJWT, upload.fields([
         res.status(500).json({ error: error.message || error });
     }
 });
+
+
 
 router.get('/get', authenticateJWT, fileController.getFile);
 
