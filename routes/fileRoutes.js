@@ -7,27 +7,28 @@ const path = require('path');
 let support_file = "";
 let noting_file = "";
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/"); 
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname); 
-        let filename = ""; 
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, "uploads/"); 
+//     },
+//     filename: (req, file, cb) => {
+//         const ext = path.extname(file.originalname); 
+//         let filename = ""; 
+// console.log(ext);
 
-        if (file.fieldname === "support") {
-            filename = `support_${req.body.number}${ext}`; 
-        } else if (file.fieldname === "noting") {
-            filename = `noting_${req.body.number}${ext}`;
-        } else {
-            filename = `${file.fieldname}${ext}`;
-        }
+//         if (file.fieldname === "support") {
+//             filename = `support_${req.body.number}${ext}`; 
+//         } else if (file.fieldname === "noting") {
+//             filename = `noting_${req.body.number}${ext}`;
+//         } else {
+//             filename = `${file.fieldname}${ext}`;
+//         }
 
-        cb(null, filename); 
-    },
-});
+//         cb(null, filename); 
+//     },
+// });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: '/uploads' });
 
 router.post('/', authenticateJWT, upload.fields([
     { name: "support", maxCount: 1 },
