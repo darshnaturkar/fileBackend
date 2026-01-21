@@ -4,8 +4,8 @@ const fileController = require('../controllers/FileController');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');  
-const File = require('../models/File');  
+const fs = require('fs');
+const File = require('../models/File');
 
 let support_file = "";
 let noting_file = "";
@@ -15,26 +15,29 @@ if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+const sanitize = (value) =>
+    value.replace(/[\/\\]/g, '_');
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, uploadDir);  
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
-        let filename = "";
-        console.log(ext);
+        const safeNumber = sanitize(req.body.number || Date.now().toString());
 
-
+        let filename;
         if (file.fieldname === "support") {
-            filename = `support_${req.body.number}${ext}`;
+            filename = `support_${safeNumber}${ext}`;
         } else if (file.fieldname === "noting") {
-            filename = `noting_${req.body.number}${ext}`;
+            filename = `noting_${safeNumber}${ext}`;
         } else {
             filename = `${file.fieldname}_${Date.now()}${ext}`;
         }
 
-        cb(null, filename);  
+        cb(null, filename);
     },
+
 });
 
 const upload = multer({ storage: storage });
@@ -82,3 +85,4 @@ router.post('/', authenticateJWT, upload.fields([
 router.get('/get', authenticateJWT, fileController.getFile);
 
 module.exports = router;
+
